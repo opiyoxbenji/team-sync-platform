@@ -6,6 +6,8 @@ import { config } from './config/app.config';
 import connectDatabase from './config/database.config';
 import { HTTPSTATUS } from './config/http.config';
 import { asyncHandler } from './middlewares/asynchandler.middleware';
+import { BadRequestException } from './utils/appError';
+import { ErrorCodeEnum } from './enums/error-code.enum';
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
@@ -19,7 +21,7 @@ app.use(
 		name: 'session',
 		keys: [config.SESSION_SECRET],
 		maxAge: 24 * 60 * 60 * 1000,
-		secure: config.NODE_ENV === 'production',
+		secure: config.NODE_ENV === 'product ion',
 		httpOnly: true,
 		sameSite: 'lax',
 	})
@@ -34,8 +36,11 @@ app.use(
 
 app.get(
 	`/`,
-	asyncHandler((req: Request, res: Response, next: NextFunction) => {
-		throw new Error("Test Error")
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+		throw new BadRequestException(
+			'Bad requesto brother',
+			ErrorCodeEnum.AUTH_INVALID_TOKEN
+		);
 		res.status(HTTPSTATUS.OK).json({
 			message: 'Hello Subscribe to the channel & share',
 		});
