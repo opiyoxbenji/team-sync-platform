@@ -4,10 +4,15 @@ import cors from 'cors';
 import session from 'cookie-session';
 import { config } from './config/app.config';
 import connectDatabase from './config/database.config';
+import { errorHandler } from './middlewares/error-handler.middleware';
 import { HTTPSTATUS } from './config/http.config';
 import { asyncHandler } from './middlewares/asynchandler.middleware';
 import { BadRequestException } from './utils/appError';
 import { ErrorCodeEnum } from './enums/error-code.enum';
+
+import './config/passport.config';
+import passport from 'passport';
+import authRoutes from './routes/auth.route';
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
@@ -26,6 +31,9 @@ app.use(
 		sameSite: 'lax',
 	})
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(
 	cors({
@@ -46,6 +54,10 @@ app.get(
 		});
 	})
 );
+
+app.use(`${BASE_PATH}/auth`, authRoutes);
+
+app.use(errorHandler);
 
 app.listen(config.PORT, async () => {
 	console.log(
