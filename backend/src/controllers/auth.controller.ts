@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { config } from '../config/app.config';
 import { registerSchema } from '../validation/auth.validation';
 import { HTTPSTATUS } from '../config/http.config';
+import { registerUserService } from '../services/auth.service';
 
 export const googleLoginCallback = asyncHandler(
 	async (req: Request, res: Response) => {
